@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>ДОКУМЕНТАЦИЯ - ГИА ДЭ RED OS и Eltex 1.37.4</title>
+<style>
+:root{
+  --red:#d9251d; --blue:#8ea9d8; --blue-light:#dbe5f3; --ink:#111;
+  --paper:#fff; --bg:#e9edf2; --muted:#4c5f7d; --green:#e6f3e7; --warn:#fff4d8;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink);line-height:1.48}
+nav{position:sticky;top:0;z-index:20;background:#15263b;color:#fff;padding:10px 14px;box-shadow:0 2px 8px #0003}
+nav .wrap{max-width:1180px;margin:auto;display:flex;flex-wrap:wrap;gap:7px}
+nav a{color:#fff;text-decoration:none;background:#ffffff18;padding:6px 10px;border-radius:14px;font-size:13px}
+nav a:hover{background:#ffffff2c}
+.sheet{max-width:1060px;margin:24px auto;background:var(--paper);padding:26px 34px 38px;box-shadow:0 4px 16px #0002;min-height:620px}
+.doc-header{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand-text{font-family:Georgia,serif;font-size:18px;line-height:1.35;text-align:center;margin-left:45px}
+.redos-logo{display:grid;grid-template-columns:28px 28px auto;grid-template-rows:28px 28px;gap:3px;align-items:center}
+.redos-logo>span{display:block;background:var(--red);width:28px;height:28px}
+.redos-logo strong{grid-column:3;grid-row:1/3;font-size:34px;color:var(--red);font-weight:500;letter-spacing:-2px}
+.redos-logo strong span{color:#111}
+.rule{height:3px;background:#111;margin:12px 0 22px}
+.section-title{display:flex;justify-content:center;align-items:center;gap:10px;margin:4px 0 22px}
+.section-title h2{font-size:29px;margin:0;text-align:center}
+.sec-num{background:var(--red);color:#fff;font-weight:700;border-radius:50%;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center}
+h3{font-size:22px;margin:24px 0 10px} h4.device{font-size:18px;margin:18px 0 7px;color:#243b63}
+p,li{font-size:16px}
+.cmd{margin:9px 0 16px}
+.cmd-title{display:flex;justify-content:space-between;align-items:center;padding:4px 9px;background:#b9cbe7;font-size:14px;font-weight:700;border:1px solid #a7b8d3;border-bottom:0}
+.cmd-title b{font-size:11px;color:#334d78}
+pre{margin:0;padding:7px 10px;background:var(--blue-light);border:1px solid #c8d3e4;white-space:pre-wrap;overflow:auto;font:15px/1.38 "Courier New",monospace}
+.note{padding:11px 14px;margin:13px 0;border-left:5px solid #7290bd;background:#f2f6fb}
+.note.warn{background:var(--warn);border-color:#ce9c25}
+.note.ok{background:var(--green);border-color:#4b9a5d}
+table{width:100%;border-collapse:collapse;margin:12px 0 20px;font-size:15px}
+th,td{border:1px solid #222;padding:8px 9px;vertical-align:top}
+th{background:var(--blue);font-size:16px}
+tr:nth-child(even) td{background:#eef3fa}
+.small{font-size:14px;color:#333}
+.toc{columns:2;column-gap:30px}.toc a{display:block;color:#174f91;text-decoration:none;padding:4px 0}
+ul.compact{margin-top:5px}.checklist li{margin:5px 0}
+.source-list a{color:#174f91;word-break:break-all}
+.footer{max-width:1060px;margin:20px auto 35px;text-align:center;color:#516173;font-size:13px}
+@media(max-width:760px){
+  .sheet{margin:0;padding:18px 16px}.brand-text{margin-left:0;font-size:14px}
+  .redos-logo{transform:scale(.78);transform-origin:right center}
+  .section-title h2{font-size:23px}.toc{columns:1}
+}
+@media print{
+  body{background:#fff}.sheet{box-shadow:none;margin:0;max-width:none;page-break-after:always}
+  nav{display:none}
+}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+<a href="#intro">Введение</a><a href="#ipplan">IP-план</a>
+<a href="#m1-1">М1. База</a><a href="#m1-3">М1. ISP</a><a href="#m1-5">М1. SSH</a>
+<a href="#m1-6">М1. GRE</a><a href="#m1-7">М1. OSPF</a><a href="#m1-8">М1. NAT/DHCP</a><a href="#m1-9">М1. DNS</a>
+<a href="#m2-1">М2. Samba</a><a href="#m2-2">М2. RAID</a><a href="#m2-3">М2. NFS</a><a href="#m2-4">М2. Chrony</a>
+<a href="#m2-5">М2. Docker</a><a href="#m2-6">М2. Apache</a><a href="#m2-7">М2. DNAT</a><a href="#m2-8">М2. Nginx</a>
+<a href="#variant">Вариативная часть</a><a href="#sources">Источники</a>
+<a href="#audit">Аудит критериев</a></div></nav>
+<section class="sheet" id="intro">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>ДОКУМЕНТАЦИЯ</h2></div>
+<p>Последовательная инструкция по всем заданиям из загруженного файла Word. 
+Оформление повторяет стиль учебного PDF «Модуль-2»: белые листы, верхний колонтитул, красный логотип, 
+голубые таблицы и светло-голубые блоки команд.</p>
+<table>
+<tr><th>Устройство</th><th>ОС / версия</th><th>Роль</th></tr>
+<tr><td>ISP</td><td>РЕД ОС сервер минимальный, без GUI</td><td>Выход в интернет, маршрутизация, NAT, chrony, nginx</td></tr>
+<tr><td>HQ-SRV</td><td>РЕД ОС сервер минимальный, без GUI</td><td>DNS, RAID0, NFS, Apache, MariaDB</td></tr>
+<tr><td>BR-SRV</td><td>РЕД ОС сервер минимальный, без GUI</td><td>Samba, Docker testapp, Nextcloud</td></tr>
+<tr><td>HQ-RTR</td><td>Eltex ESR/vESR 1.37.4</td><td>Маршрутизация HQ, GRE, OSPF, NAT, DHCP, DNAT</td></tr>
+<tr><td>BR-RTR</td><td>Eltex ESR/vESR 1.37.4</td><td>Маршрутизация BR, GRE, OSPF, NAT, DNAT, NTP-клиент</td></tr>
+<tr><td>HQ-CLI</td><td>РЕД ОС рабочая станция, GUI</td><td>DHCP-клиент, NFS-клиент, Samba-клиент, браузер, проверки вариативной части</td></tr>
+</table>
+<div class="note ok"><b>Проверка достоверности.</b> Команды Eltex сверены со справочником CLI ESR-Series версии 1.37. Команды РЕД ОС собраны по официальной Базе знаний РЕД ОС и стандартным конфигурационным файлам Linux. Файл не заменяет контрольный прогон на вашем стенде: перед экзаменом выполните разделы проверки.</div><div class="note warn"><b>Без VLAN.</b> В Word-топологии HQ-RTR подключается к HQ-SRV и HQ-CLI отдельными физическими интерфейсами. Поэтому VLAN-команды не используются. Сеть управления /29 заносится в IP-план, но отдельный интерфейс для неё в топологии не указан.</div>
+</section>
+<section class="sheet" id="ipplan">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Таблица адресации</h2></div>
+<table>
+<tr><th>Сегмент</th><th>Сеть</th><th>Устройство и интерфейс</th><th>IP-адрес</th><th>Шлюз</th></tr>
+<tr><td>Internet</td><td>DHCP</td><td>ISP enp7s1</td><td>DHCP</td><td>DHCP</td></tr>
+<tr><td>ISP-HQ</td><td>172.16.1.0/28</td><td>ISP enp7s3<br/>HQ-RTR gi1/0/2</td><td>172.16.1.1/28<br/>172.16.1.2/28</td><td>-<br/>172.16.1.1</td></tr>
+<tr><td>ISP-BR</td><td>172.16.2.0/28</td><td>ISP enp7s2<br/>BR-RTR gi1/0/2</td><td>172.16.2.1/28<br/>172.16.2.2/28</td><td>-<br/>172.16.2.1</td></tr>
+<tr><td>HQ-SRV-Net</td><td>192.168.100.0/27</td><td>HQ-RTR gi1/0/3<br/>HQ-SRV enp7s1</td><td>192.168.100.1/27<br/>192.168.100.2/27</td><td>-<br/>192.168.100.1</td></tr>
+<tr><td>HQ-CLI-Net</td><td>192.168.200.0/27</td><td>HQ-RTR gi1/0/4<br/>HQ-CLI enp7s1</td><td>192.168.200.1/27<br/>DHCP: 192.168.200.10</td><td>-<br/>192.168.200.1</td></tr>
+<tr><td>Management</td><td>192.168.99.0/29</td><td>Резерв в отчёте</td><td>Не назначается без отдельного интерфейса</td><td>-</td></tr>
+<tr><td>BR-Net</td><td>192.168.30.0/28</td><td>BR-RTR gi1/0/3<br/>BR-SRV enp7s1</td><td>192.168.30.1/28<br/>192.168.30.2/28</td><td>-<br/>192.168.30.1</td></tr>
+<tr><td>GRE</td><td>10.10.10.0/30</td><td>HQ-RTR gre 1<br/>BR-RTR gre 1</td><td>10.10.10.1/30<br/>10.10.10.2/30</td><td>-</td></tr>
+</table>
+<div class="note info">На ваших текущих VM имена интерфейсов ISP уже наблюдались как <b>enp7s1 / enp7s2 / enp7s3</b>. Перед вводом команд всё равно выполните <code>ip -br a</code> и <code>nmcli con show</code>.</div>
+</section>
+<section class="sheet" id="m1-1">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 1. Задания 1-2. Имена устройств и IPv4</h2></div>
+<h3>1. Настроить FQDN</h3>
+<h4 class="device">ISP</h4>
+<div class="cmd">
+<div class="cmd-title"><span>ISP</span><b>BASH</b></div>
+<pre>hostnamectl hostname isp.sirius-exam.org
+hostnamectl</pre>
+</div><h4 class="device">HQ-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-SRV</span><b>BASH</b></div>
+<pre>hostnamectl hostname hq-srv.sirius-exam.org
+hostnamectl</pre>
+</div><h4 class="device">BR-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-SRV</span><b>BASH</b></div>
+<pre>hostnamectl hostname br-srv.sirius-exam.org
+hostnamectl</pre>
+</div><h4 class="device">HQ-CLI</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-CLI</span><b>BASH</b></div>
+<pre>hostnamectl hostname hq-cli.sirius-exam.org
+hostnamectl</pre>
+</div><h4 class="device">HQ-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-RTR</span><b>ELTEX</b></div>
+<pre>configure
+hostname hq-rtr.sirius-exam.org
+commit
+confirm
+save</pre>
+</div><h4 class="device">BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-RTR</span><b>ELTEX</b></div>
+<pre>configure
+hostname br-rtr.sirius-exam.org
+commit
+confirm
+save</pre>
+</div>
+<h3>2. Назначить IPv4</h3>
+<h4 class="device">ISP</h4>
+<div class="cmd">
+<div class="cmd-title"><span>ISP: переименовать профили и назначить адреса</span><b>BASH</b></div>
+<pre>ip -br a
+nmcli con show
+
+# Подставьте фактические имена трёх активных профилей:
+nmcli con mod "Проводное подключение 1" connection.id WAN
+nmcli con mod "Проводное подключение 2" connection.id ISP-BR
+nmcli con mod "Проводное подключение 3" connection.id ISP-HQ
+
+nmcli con mod WAN ipv4.method auto ipv4.never-default no
+nmcli con mod ISP-BR ipv4.method manual ipv4.addresses 172.16.2.1/28 ipv4.never-default yes
+nmcli con mod ISP-HQ ipv4.method manual ipv4.addresses 172.16.1.1/28 ipv4.never-default yes
+
+nmcli con up WAN
+nmcli con up ISP-BR
+nmcli con up ISP-HQ
+ip -br a
+ip r</pre>
+</div><h4 class="device">HQ-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-SRV</span><b>BASH</b></div>
+<pre>nmcli con show
+nmcli con mod to-hq connection.id HQ-SRV
+nmcli con mod HQ-SRV ipv4.method manual ipv4.addresses 192.168.100.2/27 ipv4.gateway 192.168.100.1
+nmcli con up HQ-SRV
+ip -br a
+ip r</pre>
+</div><h4 class="device">BR-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-SRV</span><b>BASH</b></div>
+<pre>nmcli con show
+nmcli con mod to-br connection.id BR-SRV
+nmcli con mod BR-SRV ipv4.method manual ipv4.addresses 192.168.30.2/28 ipv4.gateway 192.168.30.1
+nmcli con up BR-SRV
+ip -br a
+ip r</pre>
+</div><h4 class="device">HQ-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-RTR</span><b>ELTEX</b></div>
+<pre>configure
+interface gigabitethernet 1/0/2
+  description TO-ISP
+  ip firewall disable
+  ip address 172.16.1.2/28
+  no shutdown
+exit
+interface gigabitethernet 1/0/3
+  description TO-HQ-SRV
+  ip firewall disable
+  ip address 192.168.100.1/27
+  no shutdown
+exit
+interface gigabitethernet 1/0/4
+  description TO-HQ-CLI
+  ip firewall disable
+  ip address 192.168.200.1/27
+  no shutdown
+exit
+ip route 0.0.0.0/0 172.16.1.1
+commit
+confirm
+save
+show ip interfaces</pre>
+</div><h4 class="device">BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-RTR</span><b>ELTEX</b></div>
+<pre>configure
+interface gigabitethernet 1/0/2
+  description TO-ISP
+  ip firewall disable
+  ip address 172.16.2.2/28
+  no shutdown
+exit
+interface gigabitethernet 1/0/3
+  description TO-BR-SRV
+  ip firewall disable
+  ip address 192.168.30.1/28
+  no shutdown
+exit
+ip route 0.0.0.0/0 172.16.2.1
+commit
+confirm
+save
+show ip interfaces</pre>
+</div><div class="note ok"><b>Проверка:</b> с ISP должны отвечать <code>ping -c 3 172.16.1.2</code> и <code>ping -c 3 172.16.2.2</code>.</div>
+</section>
+<section class="sheet" id="m1-3">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 1. Задание 3. Интернет на ISP и учётные записи</h2></div>
+<h3>3.1-3.2. ISP: маршруты, forwarding и PAT</h3>
+<h4 class="device">ISP</h4>
+<div class="cmd">
+<div class="cmd-title"><span>ISP: постоянные маршруты к офисам</span><b>BASH</b></div>
+<pre>ip route replace 192.168.100.0/27 via 172.16.1.2
+ip route replace 192.168.200.0/27 via 172.16.1.2
+ip route replace 192.168.30.0/28 via 172.16.2.2
+
+nmcli con mod ISP-HQ +ipv4.routes "192.168.100.0/27 172.16.1.2"
+nmcli con mod ISP-HQ +ipv4.routes "192.168.200.0/27 172.16.1.2"
+nmcli con mod ISP-BR +ipv4.routes "192.168.30.0/28 172.16.2.2"
+nmcli con up ISP-HQ
+nmcli con up ISP-BR
+ip r</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>ISP: forwarding и nftables masquerade</span><b>BASH</b></div>
+<pre>dnf install -y nftables
+nano /etc/sysctl.d/99-ip-forward.conf
+
+# Вставить:
+net.ipv4.ip_forward = 1
+
+sysctl -p /etc/sysctl.d/99-ip-forward.conf
+nano /etc/nftables.conf
+
+# Вставить:
+flush ruleset
+table ip nat {
+  chain postrouting {
+    type nat hook postrouting priority srcnat;
+    oifname "enp7s1" masquerade
+  }
+}
+
+systemctl enable --now nftables
+systemctl restart nftables
+nft list ruleset
+ping -c 3 8.8.8.8</pre>
+</div>
+<h3>3.3. sshuser на серверах</h3>
+<h4 class="device">HQ-SRV и BR-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Одинаково на обоих серверах</span><b>BASH</b></div>
+<pre>dnf install -y sudo
+useradd -u 2026 sshuser
+passwd sshuser
+# Дважды ввести: P@ssw0rd
+
+usermod -aG wheel sshuser
+nano /etc/sudoers.d/sshuser
+
+# Вставить:
+sshuser ALL=(ALL) NOPASSWD: ALL
+
+chmod 440 /etc/sudoers.d/sshuser
+id sshuser
+sudo -l -U sshuser</pre>
+</div>
+<h3>3.4-3.7. net_admin на Eltex</h3>
+<h4 class="device">HQ-RTR и BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Одинаково на обоих маршрутизаторах</span><b>ELTEX</b></div>
+<pre>configure
+username net_admin
+  password ascii-text P@ssw0rd
+  privilege 15
+exit
+ip ssh server
+commit
+confirm
+save</pre>
+</div><div class="note ok">На Eltex уровень <b>15</b> - максимальный. Команда <code>privilege 15</code> предусмотрена режимом CONFIG-USER справочника CLI 1.37.</div>
+</section>
+<section class="sheet" id="m1-5">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 1. Задания 4-5. Маршрутизация HQ и безопасный SSH</h2></div>
+<h3>4. Маршрутизация трафика HQ-RTR</h3>
+<h4 class="device">HQ-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Проверка connected-маршрутов</span><b>ELTEX</b></div>
+<pre>show ip route
+# Должны быть connected:
+# 192.168.100.0/27
+# 192.168.200.0/27
+# 172.16.1.0/28</pre>
+</div><div class="note info">Отдельные статические маршруты между HQ-SRV-Net и HQ-CLI-Net не нужны: обе сети directly connected к HQ-RTR.</div>
+<h3>5. SSH: порт 2026, только sshuser, 2 попытки, баннер</h3>
+<h4 class="device">HQ-SRV и BR-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Одинаково на обоих серверах</span><b>BASH</b></div>
+<pre>dnf install -y openssh-server
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+nano /etc/ssh/sshd_config
+
+# Добавить в конец:
+Port 2026
+MaxAuthTries 2
+AllowUsers sshuser
+PermitRootLogin no
+Banner /root/banner
+
+nano /root/banner
+# Вставить:
+Authorized access only
+
+sshd -t
+systemctl enable --now sshd
+systemctl restart sshd
+ss -tulpn | grep 2026</pre>
+</div><div class="note info">Если на сервере включён firewalld, откройте порт: <code>firewall-cmd --permanent --add-port=2026/tcp &amp;&amp; firewall-cmd --reload</code>.</div>
+</section>
+<section class="sheet" id="m1-6">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 1. Задание 6. GRE-туннель между офисами</h2></div>
+<h4 class="device">HQ-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-RTR: GRE 1</span><b>ELTEX</b></div>
+<pre>configure
+tunnel gre 1
+  description GRE-TO-BR
+  local address 172.16.1.2
+  remote address 172.16.2.2
+  ip address 10.10.10.1/30
+  enable
+exit
+commit
+confirm
+save
+show tunnels configuration gre 1
+show tunnels status gre 1</pre>
+</div><h4 class="device">BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-RTR: GRE 1</span><b>ELTEX</b></div>
+<pre>configure
+tunnel gre 1
+  description GRE-TO-HQ
+  local address 172.16.2.2
+  remote address 172.16.1.2
+  ip address 10.10.10.2/30
+  enable
+exit
+commit
+confirm
+save
+show tunnels configuration gre 1
+show tunnels status gre 1</pre>
+</div><div class="note ok"><b>Проверка:</b> HQ-RTR: <code>ping 10.10.10.2</code>; BR-RTR: <code>ping 10.10.10.1</code>.</div>
+</section>
+<section class="sheet" id="m1-7">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 1. Задание 7. OSPF только через GRE</h2></div>
+<p>Используется link-state протокол OSPF. Соседство разрешается только на интерфейсе <code>tunnel gre 1</code>. 
+Пароль <code>P@ssw0rd</code> состоит из 8 символов и укладывается в ограничение cleartext-аутентификации Eltex.</p>
+<h4 class="device">HQ-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-RTR: OSPF</span><b>ELTEX</b></div>
+<pre>configure
+router ospf 1
+  router-id 1.1.1.1
+  area 0.0.0.0
+    network 10.10.10.0/30
+  exit
+  redistribute connected
+  enable
+exit
+tunnel gre 1
+  ip ospf area 0.0.0.0
+  ip ospf instance 1
+  ip ospf network point-to-point
+  ip ospf authentication algorithm cleartext
+  ip ospf authentication key ascii-text P@ssw0rd
+exit
+commit
+confirm
+save
+show ip ospf neighbors
+show ip route ospf</pre>
+</div><h4 class="device">BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-RTR: OSPF</span><b>ELTEX</b></div>
+<pre>configure
+router ospf 1
+  router-id 2.2.2.2
+  area 0.0.0.0
+    network 10.10.10.0/30
+  exit
+  redistribute connected
+  enable
+exit
+tunnel gre 1
+  ip ospf area 0.0.0.0
+  ip ospf instance 1
+  ip ospf network point-to-point
+  ip ospf authentication algorithm cleartext
+  ip ospf authentication key ascii-text P@ssw0rd
+exit
+commit
+confirm
+save
+show ip ospf neighbors
+show ip route ospf</pre>
+</div><div class="note ok"><b>Проверка:</b> на каждом маршрутизаторе должен отображаться один OSPF-сосед. HQ-SRV должен пинговать 192.168.30.2, BR-SRV - 192.168.100.2.</div>
+</section>
+<section class="sheet" id="m1-8">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 1. Задание 8. NAT офисов и DHCP для HQ-CLI</h2></div>
+<h3>8.1. Динамический NAT офисов в сторону ISP</h3>
+<h4 class="device">HQ-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-RTR: SNAT</span><b>ELTEX</b></div>
+<pre>configure
+nat source
+  ruleset HQ-SNAT
+    to interface gigabitethernet 1/0/2
+    rule 10
+      match source-address prefix 192.168.100.0/27
+      action source-nat interface
+      enable
+    exit
+    rule 20
+      match source-address prefix 192.168.200.0/27
+      action source-nat interface
+      enable
+    exit
+  exit
+exit
+commit
+confirm
+save
+show ip nat source rulesets</pre>
+</div><h4 class="device">BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-RTR: SNAT</span><b>ELTEX</b></div>
+<pre>configure
+nat source
+  ruleset BR-SNAT
+    to interface gigabitethernet 1/0/2
+    rule 10
+      match source-address prefix 192.168.30.0/28
+      action source-nat interface
+      enable
+    exit
+  exit
+exit
+commit
+confirm
+save
+show ip nat source rulesets</pre>
+</div>
+<h3>8.2. DHCP для HQ-CLI</h3>
+<h4 class="device">HQ-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-RTR: DHCP-пул</span><b>ELTEX</b></div>
+<pre>configure
+ip dhcp-server
+ip dhcp-server pool HQ-CLI
+  network 192.168.200.0/27
+  address-range 192.168.200.10-192.168.200.10
+  default-router 192.168.200.1
+  dns-server 192.168.100.2
+  domain-name sirius-exam.org
+exit
+commit
+confirm
+save
+show ip dhcp server pool HQ-CLI
+show ip dhcp binding</pre>
+</div><h4 class="device">HQ-CLI</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-CLI: получить адрес</span><b>BASH</b></div>
+<pre>nmcli con show
+nmcli con mod "Проводное подключение 1" ipv4.method auto
+nmcli con down "Проводное подключение 1"
+nmcli con up "Проводное подключение 1"
+ip -br a
+ip r
+cat /etc/resolv.conf</pre>
+</div><div class="note info">Пул содержит только <b>192.168.200.10</b>, чтобы A-запись DNS для HQ-CLI оставалась стабильной.</div>
+</section>
+<section class="sheet" id="m1-9">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 1. Задание 9. DNS и часовой пояс</h2></div>
+<h3>9.1-9.3. DNS-сервер BIND на HQ-SRV</h3>
+<h4 class="device">HQ-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Установить BIND</span><b>BASH</b></div>
+<pre>dnf install -y bind bind-utils
+mkdir -p /var/named/master
+nano /etc/named.conf</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>/etc/named.conf</span><b>CONF</b></div>
+<pre>options {
+    listen-on port 53 { any; };
+    listen-on-v6 port 53 { none; };
+    directory "/var/named";
+    allow-query { any; };
+    recursion yes;
+    dnssec-validation no;
+    forwarders { 77.88.8.7; 77.88.8.3; };
+};
+
+zone "sirius-exam.org" IN {
+    type master;
+    file "master/sirius-exam.org.zone";
+};
+
+zone "100.168.192.in-addr.arpa" IN {
+    type master;
+    file "master/192.168.100.rev";
+};
+
+zone "200.168.192.in-addr.arpa" IN {
+    type master;
+    file "master/192.168.200.rev";
+};</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Прямая зона</span><b>BASH</b></div>
+<pre>nano /var/named/master/sirius-exam.org.zone
+
+$TTL 604800
+@ IN SOA hq-srv.sirius-exam.org. root.sirius-exam.org. (
+  2026010101 600 3600 604800 360 )
+@       IN NS hq-srv.sirius-exam.org.
+hq-rtr  IN A 192.168.100.1
+br-rtr  IN A 192.168.30.1
+hq-srv  IN A 192.168.100.2
+hq-cli  IN A 192.168.200.10
+br-srv  IN A 192.168.30.2
+docker  IN A 172.16.1.1
+web     IN A 172.16.2.1</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>PTR-зоны</span><b>BASH</b></div>
+<pre>nano /var/named/master/192.168.100.rev
+
+$TTL 604800
+@ IN SOA hq-srv.sirius-exam.org. root.sirius-exam.org. (
+  2026010101 600 3600 604800 360 )
+@ IN NS hq-srv.sirius-exam.org.
+1 IN PTR hq-rtr.sirius-exam.org.
+2 IN PTR hq-srv.sirius-exam.org.
+
+nano /var/named/master/192.168.200.rev
+
+$TTL 604800
+@ IN SOA hq-srv.sirius-exam.org. root.sirius-exam.org. (
+  2026010101 600 3600 604800 360 )
+@ IN NS hq-srv.sirius-exam.org.
+10 IN PTR hq-cli.sirius-exam.org.</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Проверить и запустить BIND</span><b>BASH</b></div>
+<pre>chown -R root:named /var/named/master
+chmod 640 /var/named/master/*
+named-checkconf
+named-checkzone sirius-exam.org /var/named/master/sirius-exam.org.zone
+named-checkzone 100.168.192.in-addr.arpa /var/named/master/192.168.100.rev
+named-checkzone 200.168.192.in-addr.arpa /var/named/master/192.168.200.rev
+systemctl enable --now named
+systemctl restart named
+
+nslookup hq-srv.sirius-exam.org 127.0.0.1
+nslookup 192.168.100.2 127.0.0.1
+nslookup ya.ru 127.0.0.1</pre>
+</div>
+<h3>9.4. Часовой пояс</h3>
+<h4 class="device">ISP, HQ-SRV, BR-SRV, HQ-CLI</h4>
+<div class="cmd">
+<div class="cmd-title"><span>RED OS</span><b>BASH</b></div>
+<pre>timedatectl set-timezone Europe/Moscow
+timedatectl</pre>
+</div><h4 class="device">HQ-RTR и BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Eltex</span><b>ELTEX</b></div>
+<pre>configure
+clock timezone gmt +3
+commit
+confirm
+save
+show date</pre>
+</div><div class="note warn">Если площадка находится не в часовом поясе Москвы, замените Europe/Moscow и gmt +3 на актуальный часовой пояс.</div>
+</section>
+<section class="sheet" id="m2-1">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 2. Задание 1. Samba на BR-SRV</h2></div>
+<p>Word-задание требует службу Samba, FQDN <code>br-srv.sirius-exam.org</code>, пять пользователей, группу <code>hq</code> 
+и возможность аутентификации с HQ-CLI. Поэтому используется файловый сервер Samba с локальными Samba-учётными записями. 
+Контроллер домена <code>au-team.irpo</code> из учебного PDF не добавляется: в Word-задании он не требуется.</p>
+<h4 class="device">BR-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Установить и подготовить Samba</span><b>BASH</b></div>
+<pre>hostnamectl hostname br-srv.sirius-exam.org
+dnf install -y samba samba-client
+groupadd hq
+mkdir -p /srv/samba/hq
+chown root:hq /srv/samba/hq
+chmod 2770 /srv/samba/hq</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Создать пользователей Linux и Samba</span><b>BASH</b></div>
+<pre>for n in 1 2 3 4 5; do
+  useradd -m -G hq hquser$n
+  echo "P@ssw0rd" | passwd --stdin hquser$n
+  (echo "P@ssw0rd"; echo "P@ssw0rd") | smbpasswd -a -s hquser$n
+done
+
+getent group hq
+pdbedit -L</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>/etc/samba/smb.conf</span><b>CONF</b></div>
+<pre>cp /etc/samba/smb.conf /etc/samba/smb.conf.bak 2&gt;/dev/null || true
+nano /etc/samba/smb.conf
+
+[global]
+   workgroup = WORKGROUP
+   security = user
+   map to guest = never
+
+[hq]
+   path = /srv/samba/hq
+   browseable = yes
+   read only = no
+   valid users = @hq
+   force group = hq
+   create mask = 0660
+   directory mask = 2770</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Запуск и проверка Samba</span><b>BASH</b></div>
+<pre>testparm
+systemctl enable --now smb
+systemctl restart smb
+smbclient -L //127.0.0.1 -U hquser1</pre>
+</div><h4 class="device">HQ-CLI</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Проверить аутентификацию с HQ-CLI</span><b>BASH</b></div>
+<pre>dnf install -y samba-client
+smbclient //192.168.30.2/hq -U hquser1
+
+# Внутри smbclient:
+ls
+put /etc/hosts hosts-test.txt
+ls
+exit</pre>
+</div><div class="note ok">Проверка выполняется именно с HQ-CLI: пользователь группы hq вводит пароль P@ssw0rd и получает доступ к ресурсу BR-SRV.</div>
+</section>
+<section class="sheet" id="m2-2">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 2. Задание 2. RAID0 на HQ-SRV</h2></div>
+<h4 class="device">HQ-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Найти дополнительные диски</span><b>BASH</b></div>
+<pre>dnf install -y mdadm parted
+lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS
+# Ниже предполагаются два дополнительных диска: /dev/sdb и /dev/sdc</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Создать md0 и сохранить конфигурацию</span><b>BASH</b></div>
+<pre>mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sdb /dev/sdc
+cat /proc/mdstat
+mdadm --detail /dev/md0
+mdadm --detail --scan &gt; /etc/mdadm.conf
+cat /etc/mdadm.conf</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Создать раздел md0p1</span><b>BASH</b></div>
+<pre>fdisk /dev/md0
+
+# В fdisk нажать:
+n
+p
+1
+
+
+w
+
+partprobe /dev/md0
+lsblk</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>ext4 и автомонтирование /raid</span><b>BASH</b></div>
+<pre>mkfs.ext4 /dev/md0p1
+mkdir -p /raid
+blkid /dev/md0p1
+
+nano /etc/fstab
+# Добавить строку с UUID:
+UUID=ВСТАВЬТЕ_UUID /raid ext4 defaults 0 0
+
+systemctl daemon-reload
+mount -a
+df -h /raid
+lsblk -f</pre>
+</div><div class="note ok">Официальная База знаний РЕД ОС рекомендует mdadm для программного RAID. В этом задании после создания массива дополнительно создаётся раздел md0p1, как требует Word-файл.</div>
+</section>
+<section class="sheet" id="m2-3">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 2. Задание 3. NFS</h2></div><h4 class="device">HQ-SRV</h4><div class="cmd"><div class="cmd-title"><span>Экспортировать /raid/nfs только для HQ-CLI-Net</span><b>BASH</b></div><pre>dnf install -y nfs-utils
+mkdir -p /raid/nfs
+chmod 777 /raid/nfs
+nano /etc/exports
+
+# Вставить:
+/raid/nfs 192.168.200.0/27(rw,sync,no_subtree_check)
+
+systemctl enable --now nfs-server
+exportfs -rav
+exportfs -v</pre></div><h4 class="device">HQ-CLI</h4><div class="cmd"><div class="cmd-title"><span>Автомонтирование /mnt/nfs при обращении через autofs</span><b>BASH</b></div><pre>dnf install -y nfs-utils autofs
+mkdir -p /mnt
+nano /etc/auto.master
+
+# Добавить строку:
+/mnt /etc/auto.nfs --timeout=60
+
+nano /etc/auto.nfs
+# Добавить строку:
+nfs -rw,soft,intr 192.168.100.2:/raid/nfs
+
+systemctl enable --now autofs
+systemctl restart autofs
+ls -la /mnt/nfs
+touch /mnt/nfs/hq-cli-test.txt
+ls -l /mnt/nfs</pre></div><div class="note info">В отчёт занесите: экспорт <b>/raid/nfs</b>, разрешённая сеть <b>192.168.200.0/27</b>, режим <b>rw</b>, клиентская точка <b>/mnt/nfs</b>. Использование autofs обеспечивает монтирование именно при обращении к каталогу.</div></section>
+<section class="sheet" id="m2-4">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 2. Задание 4. Chrony на ISP</h2></div><h4 class="device">ISP</h4><div class="cmd"><div class="cmd-title"><span>ISP: NTP-сервер stratum 5</span><b>BASH</b></div><pre>dnf install -y chrony
+nano /etc/chrony.conf
+
+# Оставить или добавить:
+pool pool.ntp.org iburst
+local stratum 5
+allow 192.168.100.0/27
+allow 192.168.200.0/27
+allow 192.168.30.0/28
+allow 172.16.0.0/12
+
+systemctl enable --now chronyd
+systemctl restart chronyd
+chronyc sources -v
+chronyc tracking</pre></div><h4 class="device">HQ-SRV и HQ-CLI</h4><div class="cmd"><div class="cmd-title"><span>Клиенты HQ</span><b>BASH</b></div><pre>dnf install -y chrony
+nano /etc/chrony.conf
+# Добавить:
+server 172.16.1.1 iburst
+
+systemctl enable --now chronyd
+systemctl restart chronyd
+chronyc sources -v
+chronyc tracking</pre></div><h4 class="device">BR-SRV</h4><div class="cmd"><div class="cmd-title"><span>Клиент BR-SRV</span><b>BASH</b></div><pre>dnf install -y chrony
+nano /etc/chrony.conf
+# Добавить:
+server 172.16.2.1 iburst
+
+systemctl enable --now chronyd
+systemctl restart chronyd
+chronyc sources -v
+chronyc tracking</pre></div><h4 class="device">BR-RTR</h4><div class="cmd"><div class="cmd-title"><span>Клиент BR-RTR</span><b>ELTEX</b></div><pre>configure
+ntp enable
+ntp server 172.16.2.1
+exit
+commit
+confirm
+save
+show ntp configuration
+show ntp peers</pre></div></section>
+<section class="sheet" id="m2-5">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 2. Задание 5. Docker testapp на BR-SRV</h2></div>
+<h4 class="device">BR-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Установить Docker и Compose</span><b>BASH</b></div>
+<pre>dnf install -y docker-ce docker-ce-cli docker-compose
+systemctl enable docker --now
+systemctl status docker --no-pager
+docker --version
+docker-compose --version</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Подключить Additional.iso и загрузить образы</span><b>BASH</b></div>
+<pre>lsblk
+mkdir -p /mnt/additional
+mount /dev/sr0 /mnt/additional
+ls -l /mnt/additional/docker
+cat /mnt/additional/docker/readme.txt
+
+docker load &lt; /mnt/additional/docker/site_latest.tar
+docker load &lt; /mnt/additional/docker/mariadb_latest.tar
+docker image ls</pre>
+</div><div class="note warn">После <code>docker image ls</code> проверьте фактические теги. В примере ниже используются <code>site:latest</code> и <code>mariadb:10.11</code>, как в учебном PDF.</div>
+<div class="cmd">
+<div class="cmd-title"><span>/root/web.yaml</span><b>YAML</b></div>
+<pre>cd /root
+nano web.yaml
+
+services:
+  db:
+    image: mariadb:10.11
+    container_name: db
+    restart: always
+    environment:
+      MARIADB_DATABASE: testdb
+      MARIADB_USER: test
+      MARIADB_PASSWORD: P@ssw0rd
+      MARIADB_ROOT_PASSWORD: P@ssw0rd
+    volumes:
+      - db_data:/var/lib/mysql
+
+  testapp:
+    image: site:latest
+    container_name: tespapp
+    restart: always
+    ports:
+      - "192.168.30.2:8080:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: testdb
+      DB_USER: test
+      DB_PASS: P@ssw0rd
+      DB_TYPE: maria
+    depends_on:
+      - db
+
+volumes:
+  db_data:</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Запуск и проверка</span><b>BASH</b></div>
+<pre>cd /root
+docker-compose -f web.yaml up -d
+docker ps
+docker logs tespapp --tail 50
+curl http://127.0.0.1:8080</pre>
+</div><div class="note ok">Публикация <code>192.168.30.2:8080:8000</code> сохраняет внешний порт testapp <b>8080</b>, но освобождает loopback-адрес <code>127.0.0.1:8080</code> для Nextcloud. Word-файл требует имя контейнера <b>tespapp</b> - именно с буквой <b>s</b> после <b>te</b>. В Compose оно задано через <code>container_name: tespapp</code>.</div>
+</section>
+<section class="sheet" id="m2-6">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 2. Задание 6. Apache и MariaDB на HQ-SRV</h2></div>
+<h4 class="device">HQ-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Установить и запустить службы</span><b>BASH</b></div>
+<pre>dnf install -y httpd php php-mysqlnd mariadb-server mariadb
+systemctl enable --now mariadb
+systemctl enable --now httpd
+systemctl status mariadb httpd --no-pager</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Подключить Additional.iso</span><b>BASH</b></div>
+<pre>lsblk
+mkdir -p /mnt/additional
+mount /dev/sr0 /mnt/additional
+find /mnt/additional/web -maxdepth 2 -type f | sort</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Создать webdb и пользователя web</span><b>SQL</b></div>
+<pre>mysql -u root
+
+CREATE DATABASE webdb;
+CREATE USER 'web'@'localhost' IDENTIFIED BY 'P@ssw0rd';
+GRANT ALL PRIVILEGES ON webdb.* TO 'web'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Импортировать приложение</span><b>BASH</b></div>
+<pre>mysql -u root webdb &lt; /mnt/additional/web/dump.sql
+cp /mnt/additional/web/index.php /var/www/html/
+cp -r /mnt/additional/web/images /var/www/html/
+
+nano /var/www/html/index.php
+# Указать:
+# host     = localhost
+# database = webdb
+# user     = web
+# password = P@ssw0rd
+
+systemctl restart mariadb httpd
+curl http://127.0.0.1</pre>
+</div><div class="note info">В отчёт занесите: Apache на порту 80, БД webdb, пользователь web, импорт dump.sql, каталог приложения /var/www/html.</div>
+</section>
+<section class="sheet" id="m2-7">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 2. Задание 7. DNAT на Eltex</h2></div>
+<h3>HQ-RTR: 8080 → HQ-SRV:80 и 2026 → HQ-SRV:2026</h3>
+<h4 class="device">HQ-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-RTR</span><b>ELTEX</b></div>
+<pre>configure
+nat destination
+  pool HQ-WEB
+    ip address 192.168.100.2
+    ip port 80
+  exit
+  pool HQ-SSH
+    ip address 192.168.100.2
+    ip port 2026
+  exit
+  ruleset HQ-DNAT
+    from interface gigabitethernet 1/0/2
+    rule 10
+      match protocol tcp
+      match destination-port port-range 8080
+      action destination-nat pool HQ-WEB
+      enable
+    exit
+    rule 20
+      match protocol tcp
+      match destination-port port-range 2026
+      action destination-nat pool HQ-SSH
+      enable
+    exit
+  exit
+exit
+commit
+confirm
+save
+show ip nat destination pools
+show ip nat destination rulesets</pre>
+</div>
+<h3>BR-RTR: 8080 → BR-SRV:8080 и 2026 → BR-SRV:2026</h3>
+<h4 class="device">BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-RTR</span><b>ELTEX</b></div>
+<pre>configure
+nat destination
+  pool BR-WEB
+    ip address 192.168.30.2
+    ip port 8080
+  exit
+  pool BR-SSH
+    ip address 192.168.30.2
+    ip port 2026
+  exit
+  ruleset BR-DNAT
+    from interface gigabitethernet 1/0/2
+    rule 10
+      match protocol tcp
+      match destination-port port-range 8080
+      action destination-nat pool BR-WEB
+      enable
+    exit
+    rule 20
+      match protocol tcp
+      match destination-port port-range 2026
+      action destination-nat pool BR-SSH
+      enable
+    exit
+  exit
+exit
+commit
+confirm
+save
+show ip nat destination pools
+show ip nat destination rulesets</pre>
+</div><h4 class="device">ISP</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Проверка с ISP</span><b>BASH</b></div>
+<pre>curl http://172.16.1.2:8080
+curl http://172.16.2.2:8080
+ssh -p 2026 sshuser@172.16.1.2
+ssh -p 2026 sshuser@172.16.2.2</pre>
+</div>
+</section>
+<section class="sheet" id="m2-8">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Модуль 2. Задания 8-10. Nginx, Basic Auth, Яндекс Браузер</h2></div>
+<h3>8. Reverse proxy на ISP</h3>
+<h4 class="device">ISP</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Установить Nginx</span><b>BASH</b></div>
+<pre>dnf install -y nginx httpd-tools
+nano /etc/nginx/conf.d/exam.conf</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>/etc/nginx/conf.d/exam.conf</span><b>NGINX</b></div>
+<pre>server {
+    listen 80;
+    server_name web.sirius-exam.org;
+
+    location / {
+        proxy_pass http://172.16.1.2:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen 80;
+    server_name docker.sirius-exam.org;
+
+    location / {
+        proxy_pass http://172.16.2.2:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}</pre>
+</div>
+<div class="cmd">
+<div class="cmd-title"><span>Проверить Nginx</span><b>BASH</b></div>
+<pre>nginx -t
+systemctl enable --now nginx
+systemctl restart nginx
+curl -H 'Host: web.sirius-exam.org' http://127.0.0.1
+curl -H 'Host: docker.sirius-exam.org' http://127.0.0.1</pre>
+</div>
+<h3>9. Basic Auth только для web.sirius-exam.org</h3>
+<h4 class="device">ISP</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Создать /etc/nginx/.htpasswd</span><b>BASH</b></div>
+<pre>htpasswd -c /etc/nginx/.htpasswd WEB
+# Дважды ввести: P@ssw0rd
+
+nano /etc/nginx/conf.d/exam.conf
+# Внутрь location / блока web.sirius-exam.org добавить:
+auth_basic "Restricted area";
+auth_basic_user_file /etc/nginx/.htpasswd;
+
+nginx -t
+systemctl restart nginx
+
+curl -I -H 'Host: web.sirius-exam.org' http://127.0.0.1
+curl -u WEB:P@ssw0rd -H 'Host: web.sirius-exam.org' http://127.0.0.1</pre>
+</div>
+<h3>10. Яндекс Браузер</h3>
+<h4 class="device">HQ-CLI</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-CLI</span><b>BASH</b></div>
+<pre>sudo dnf install -y yandex-browser-stable
+
+# Если пакет не найден:
+sudo dnf install -y yandex-browser-release
+sudo dnf install -y yandex-browser-stable
+
+rpm -qa | grep -i yandex</pre>
+</div><div class="note ok">Официальная инструкция РЕД ОС указывает пакет <code>yandex-browser-stable</code>; при отсутствии репозитория сначала устанавливается <code>yandex-browser-release</code>.</div>
+</section>
+<section class="sheet" id="variant">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Вариативная часть. Nextcloud и права доступа</h2></div><h3>Вариативный модуль 1. Nextcloud на BR-SRV</h3><div class="note ok"><b>testapp не останавливается.</b> Основное приложение остаётся доступным на <code>192.168.30.2:8080</code>. Для Nextcloud используется обязательный порт <code>127.0.0.1:8080</code>. Конфликта нет, потому что сервисы слушают разные локальные IP-адреса.</div><h4 class="device">BR-SRV</h4><div class="cmd"><div class="cmd-title"><span>Проверить статический IP Сервера 1</span><b>BASH</b></div><pre>ip -br a
+ip r
+# Должно быть:
+# 192.168.30.2/28, шлюз 192.168.30.1</pre></div><div class="cmd"><div class="cmd-title"><span>Установить совместимый Docker CLI и Docker Compose</span><b>BASH</b></div><pre># Если Docker уже установлен для testapp, повторная установка не нужна.
+command -v docker &gt;/dev/null || sudo yum install -y podman-docker
+command -v docker-compose &gt;/dev/null || sudo yum install -y docker-compose
+
+# Проверка установки
+docker --version
+docker-compose --version</pre></div><div class="note info">Команды основаны на приложенной инструкции Nextcloud. Условная установка не пытается поставить <code>podman-docker</code> поверх уже работающего Docker Engine из основного Модуля 2.</div><div class="cmd"><div class="cmd-title"><span>Создать рабочий каталог</span><b>BASH</b></div><pre>sudo mkdir -p /opt/nextcloud
+cd /opt/nextcloud
+sudo nano docker-compose.yml</pre></div><div class="cmd"><div class="cmd-title"><span>/opt/nextcloud/docker-compose.yml</span><b>YAML</b></div><pre>version: '3'
+services:
+  db:
+    image: mariadb:10.6
+    container_name: nextcloud-db
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - ./db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=YourStrongRootPass123
+      - MYSQL_PASSWORD=NextcloudDBpass2025
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud-app
+    restart: always
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./nextcloud_data:/var/www/html
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=NextcloudDBpass2025
+      - MYSQL_DATABASE=nextcloud
+    depends_on:
+      - db</pre></div><div class="cmd"><div class="cmd-title"><span>Запустить контейнеры Nextcloud</span><b>BASH</b></div><pre>cd /opt/nextcloud
+sudo docker-compose up -d
+sudo docker ps
+curl -I http://127.0.0.1:8080</pre></div><div class="cmd"><div class="cmd-title"><span>Установить Nginx и создать самоподписанный сертификат</span><b>BASH</b></div><pre>sudo yum install -y nginx openssl
+sudo mkdir -p /etc/ssl/certs /etc/ssl/private
+
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/ssl/private/nextcloud-selfsigned.key \
+    -out /etc/ssl/certs/nextcloud-selfsigned.crt \
+    -subj "/C=RU/ST=Moscow/L=Moscow/O=MyCompany/CN=127.0.0.1"</pre></div><div class="cmd"><div class="cmd-title"><span>Создать конфигурацию Nginx</span><b>BASH</b></div><pre>sudo mkdir -p /etc/nginx/sites-available
+sudo nano /etc/nginx/sites-available/nextcloud</pre></div><div class="cmd"><div class="cmd-title"><span>/etc/nginx/sites-available/nextcloud</span><b>NGINX</b></div><pre>server {
+    listen 443 ssl;
+    server_name 127.0.0.1 192.168.30.2;
+
+    ssl_certificate /etc/ssl/certs/nextcloud-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/nextcloud-selfsigned.key;
+
+    client_max_body_size 10G;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+
+        proxy_pass http://127.0.0.1:8080;
+        proxy_redirect off;
+    }
+}</pre></div><div class="cmd"><div class="cmd-title"><span>Создать ссылку sites-enabled и подключить каталог</span><b>BASH</b></div><pre>sudo mkdir -p /etc/nginx/sites-enabled
+sudo ln -s /etc/nginx/sites-available/nextcloud /etc/nginx/sites-enabled/nextcloud
+
+sudo nano /etc/nginx/nginx.conf
+# Внутри блока http { ... } добавить строку:
+include /etc/nginx/sites-enabled/*;</pre></div><div class="cmd"><div class="cmd-title"><span>Проверить и запустить Nginx</span><b>BASH</b></div><pre>sudo nginx -t
+sudo systemctl enable nginx
+sudo systemctl restart nginx
+curl -kI https://127.0.0.1</pre></div><div class="note ok">Локальная проверка по условию: на BR-SRV откройте <b>https://127.0.0.1</b> или выполните <code>curl -kI https://127.0.0.1</code>. Должна открыться страница начальной настройки Nextcloud.</div><h3>Вариативный модуль 2. Пользователи и каталоги на HQ-CLI</h3><h4 class="device">HQ-CLI</h4><div class="cmd"><div class="cmd-title"><span>Создать группы, пользователей и каталоги</span><b>BASH</b></div><pre>sudo groupadd Work
+sudo groupadd Job
+sudo groupadd labor
+
+sudo useradd -m -G Work User1
+sudo useradd -m -G Work User2
+sudo useradd -m -G Job User3
+sudo useradd -m -G Job User4
+sudo useradd -m -G labor User5
+
+sudo mkdir -p /home/Folder/work_shared
+sudo mkdir -p /home/Folder/job_readonly
+
+sudo chown root:Work /home/Folder/work_shared
+sudo chmod 770 /home/Folder/work_shared
+
+sudo chown root:Job /home/Folder/job_readonly
+sudo chmod 750 /home/Folder/job_readonly
+
+# Зафиксировать в отчёте IP Сервера 1:
+echo "BR-SRV (Сервер 1): 192.168.30.2/28"
+
+ls -ld /home/Folder/work_shared /home/Folder/job_readonly</pre></div><h3>Вариативный модуль 3. Эксплуатационные проверки</h3><h4 class="device">HQ-CLI</h4><div class="cmd"><div class="cmd-title"><span>Открыть страницу установки Nextcloud</span><b>BASH</b></div><pre># В браузере HQ-CLI открыть:
+https://192.168.30.2
+
+# Подтвердить переход по самоподписанному сертификату.
+# Должна открыться страница установки Nextcloud.</pre></div><div class="cmd"><div class="cmd-title"><span>Проверка прав</span><b>BASH</b></div><pre>sudo -u User1 touch /home/Folder/work_shared/user1.txt
+sudo -u User1 rm /home/Folder/work_shared/user1.txt
+
+echo "readonly" | sudo tee /home/Folder/job_readonly/readme.txt
+sudo chown root:Job /home/Folder/job_readonly/readme.txt
+sudo chmod 640 /home/Folder/job_readonly/readme.txt
+
+sudo -u User3 cat /home/Folder/job_readonly/readme.txt
+sudo -u User3 touch /home/Folder/job_readonly/user3.txt
+# Ожидается: Permission denied
+
+sudo -u User5 ls /home/Folder/work_shared
+# Ожидается: Permission denied
+sudo -u User5 ls /home/Folder/job_readonly
+# Ожидается: Permission denied</pre></div><h4 class="device">BR-SRV</h4><div class="cmd"><div class="cmd-title"><span>Просмотр access.log и поиск IP Сервера 2</span><b>BASH</b></div><pre>tail -f /var/log/nginx/access.log
+
+# После запроса с HQ-CLI остановить tail сочетанием Ctrl+C и проверить:
+grep '192.168.200.10' /var/log/nginx/access.log | tail</pre></div><h4 class="device">HQ-CLI</h4><div class="cmd"><div class="cmd-title"><span>Запрос к BR-SRV и проверка HSTS</span><b>BASH</b></div><pre>curl -k https://192.168.30.2 &gt; /dev/null
+curl -kI https://192.168.30.2 | grep -i strict-transport-security
+
+# Ожидается:
+# Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre></div><div class="note info">После первого HTTPS-перехода браузер HQ-CLI получает HSTS-заголовок. Для проверки оцениваемого результата сохраните вывод команды <code>curl -kI</code> и строку из access.log с IP HQ-CLI.</div></section>
+<section class="sheet" id="checks">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Финальная проверка после каждого модуля</h2></div>
+<h3>После Модуля 1</h3>
+<h4 class="device">ISP</h4>
+<div class="cmd">
+<div class="cmd-title"><span>ISP</span><b>BASH</b></div>
+<pre>ip -br a
+ip r
+sysctl net.ipv4.ip_forward
+nft list ruleset
+ping -c 3 172.16.1.2
+ping -c 3 172.16.2.2
+ping -c 3 192.168.100.2
+ping -c 3 192.168.30.2</pre>
+</div><h4 class="device">HQ-RTR и BR-RTR</h4>
+<div class="cmd">
+<div class="cmd-title"><span>Eltex</span><b>ELTEX</b></div>
+<pre>show ip interfaces
+show ip route
+show tunnels status gre 1
+show ip ospf neighbors
+show ip nat source rulesets
+show ip dhcp binding   # только HQ-RTR</pre>
+</div><h4 class="device">HQ-CLI</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-CLI</span><b>BASH</b></div>
+<pre>ip -br a
+ip r
+cat /etc/resolv.conf
+ping -c 3 192.168.100.2
+ping -c 3 192.168.30.2
+nslookup hq-srv.sirius-exam.org
+nslookup ya.ru</pre>
+</div>
+<h3>После Модуля 2</h3>
+<h4 class="device">HQ-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-SRV</span><b>BASH</b></div>
+<pre>cat /proc/mdstat
+mdadm --detail /dev/md0
+df -h /raid
+exportfs -v
+curl http://127.0.0.1</pre>
+</div><h4 class="device">BR-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-SRV</span><b>BASH</b></div>
+<pre>testparm
+pdbedit -L
+docker ps
+curl http://127.0.0.1:8080
+chronyc sources -v</pre>
+</div><h4 class="device">ISP</h4>
+<div class="cmd">
+<div class="cmd-title"><span>ISP</span><b>BASH</b></div>
+<pre>nginx -t
+curl -I -H 'Host: web.sirius-exam.org' http://127.0.0.1
+curl -u WEB:P@ssw0rd -H 'Host: web.sirius-exam.org' http://127.0.0.1
+curl -H 'Host: docker.sirius-exam.org' http://127.0.0.1</pre>
+</div><h4 class="device">HQ-CLI</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-CLI</span><b>BASH</b></div>
+<pre>ls -la /mnt/nfs
+mount | grep /mnt/nfs
+smbclient //192.168.30.2/hq -U hquser1
+rpm -qa | grep -i yandex</pre>
+</div>
+<h3>После вариативной части</h3>
+<h4 class="device">BR-SRV</h4>
+<div class="cmd">
+<div class="cmd-title"><span>BR-SRV</span><b>BASH</b></div>
+<pre>docker ps
+nginx -t
+curl -kI https://127.0.0.1
+ls -l /etc/nginx/sites-enabled/</pre>
+</div><h4 class="device">HQ-CLI</h4>
+<div class="cmd">
+<div class="cmd-title"><span>HQ-CLI</span><b>BASH</b></div>
+<pre>curl -kI https://192.168.30.2 | grep -i strict-transport-security
+grep '192.168.200.10' /var/log/nginx/access.log | tail   # выполнить на BR-SRV
+ls -ld /home/Folder/work_shared /home/Folder/job_readonly</pre>
+</div>
+</section>
+<section class="sheet" id="audit"><header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header><div class="rule"></div><div class="section-title"><h2>Аудит соответствия критериям</h2></div><p>Ниже приведён статический аудит HTML и Markdown-копии по критериям оценивания. Статус означает, что в документации присутствуют необходимые команды и проверки. Реальное выполнение подтверждается только прогоном на стенде.</p>
+<h3>Основная часть: 49 подкритериев</h3>
+<table><tr><th>№</th><th>Проверяемое действие</th><th>Раздел</th><th>Статус</th></tr><tr><td>1</td><td>FQDN всем устройствам</td><td><a href="#m1-1">m1-1</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>2</td><td>Расчёт RFC1918-подсетей</td><td><a href="#ipplan">ipplan</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>3</td><td>IPv4 на HQ-RTR, BR-RTR, HQ-SRV, BR-SRV, HQ-CLI</td><td><a href="#m1-1">m1-1</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>4</td><td>DHCP WAN ISP и default route</td><td><a href="#m1-1">m1-1</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>5</td><td>ISP-HQ и ISP-BR /28</td><td><a href="#m1-1">m1-1</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>6</td><td>PAT на ISP</td><td><a href="#m1-3">m1-3</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>7</td><td>sshuser UID 2026, пароль, sudo NOPASSWD</td><td><a href="#m1-3">m1-3</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>8</td><td>net_admin с максимальными привилегиями</td><td><a href="#m1-3">m1-3</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>9</td><td>SSH 2026 только sshuser</td><td><a href="#m1-5">m1-5</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>10</td><td>MaxAuthTries 2</td><td><a href="#m1-5">m1-5</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>11</td><td>Баннер Authorized access only</td><td><a href="#m1-5">m1-5</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>12</td><td>GRE/IPIP между HQ-RTR и BR-RTR</td><td><a href="#m1-6">m1-6</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>13</td><td>OSPF только на GRE</td><td><a href="#m1-7">m1-7</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>14</td><td>Пароль OSPF</td><td><a href="#m1-7">m1-7</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>15</td><td>Обмен офисными маршрутами</td><td><a href="#m1-7">m1-7</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>16</td><td>DHCP HQ-CLI и исключение адреса роутера</td><td><a href="#m1-8">m1-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>17</td><td>Шлюз HQ-RTR для HQ-CLI</td><td><a href="#m1-8">m1-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>18</td><td>DNS HQ-SRV и суффикс sirius-exam.org</td><td><a href="#m1-8">m1-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>19</td><td>Прямая и обратные DNS-зоны</td><td><a href="#m1-9">m1-9</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>20</td><td>DNS forwarder</td><td><a href="#m1-9">m1-9</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>21</td><td>Chrony ISP stratum 5</td><td><a href="#m2-4">m2-4</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>22</td><td>Клиенты chrony HQ-SRV, HQ-CLI, BR-RTR, BR-SRV</td><td><a href="#m2-4">m2-4</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>23</td><td>FQDN BR-SRV</td><td><a href="#m2-1">m2-1</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>24</td><td>Доступ HQ-CLI к BR-SRV</td><td><a href="#m2-1">m2-1</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>25</td><td>hquser1-hquser5</td><td><a href="#m2-1">m2-1</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>26</td><td>Группа hq</td><td><a href="#m2-1">m2-1</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>27</td><td>Парольная Samba-аутентификация с HQ-CLI</td><td><a href="#m2-1">m2-1</a></td><td>Покрыто literal-требование: Samba-вход по паролю с HQ-CLI; см. примечание ниже</td></tr><tr><td>28</td><td>RAID0 md0 из двух дисков</td><td><a href="#m2-2">m2-2</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>29</td><td>/etc/mdadm.conf</td><td><a href="#m2-2">m2-2</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>30</td><td>Раздел, ext4, автомонтирование /raid</td><td><a href="#m2-2">m2-2</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>31</td><td>Экспорт /raid/nfs только HQ-CLI-Net</td><td><a href="#m2-3">m2-3</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>32</td><td>Автомонтирование /mnt/nfs при обращении</td><td><a href="#m2-3">m2-3</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>33</td><td>Docker testapp + db из ISO</td><td><a href="#m2-5">m2-5</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>34</td><td>testdb, test, P@ssw0rd</td><td><a href="#m2-5">m2-5</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>35</td><td>testapp доступен извне на 8080</td><td><a href="#m2-5">m2-5</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>36</td><td>Импорт dump.sql в webdb</td><td><a href="#m2-6">m2-6</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>37</td><td>web / P@ssw0rd и права webdb</td><td><a href="#m2-6">m2-6</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>38</td><td>index.php и images</td><td><a href="#m2-6">m2-6</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>39</td><td>Корректные реквизиты index.php</td><td><a href="#m2-6">m2-6</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>40</td><td>BR-RTR DNAT 8080 → testapp</td><td><a href="#m2-7">m2-7</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>41</td><td>HQ-RTR DNAT 8080 → Apache</td><td><a href="#m2-7">m2-7</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>42</td><td>HQ-RTR DNAT 2026 → HQ-SRV</td><td><a href="#m2-7">m2-7</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>43</td><td>BR-RTR DNAT 2026 → BR-SRV</td><td><a href="#m2-7">m2-7</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>44</td><td>web.sirius-exam.org → HQ-SRV</td><td><a href="#m2-8">m2-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>45</td><td>docker.sirius-exam.org → testapp</td><td><a href="#m2-8">m2-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>46</td><td>Basic Auth для web</td><td><a href="#m2-8">m2-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>47</td><td>WEB / P@ssw0rd в .htpasswd</td><td><a href="#m2-8">m2-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>48</td><td>Переход на сайт после авторизации</td><td><a href="#m2-8">m2-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>49</td><td>Яндекс Браузер HQ-CLI</td><td><a href="#m2-8">m2-8</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr></table>
+<h3>Вариативная часть: 25 действий</h3>
+<table><tr><th>№</th><th>Проверяемое действие</th><th>Раздел</th><th>Статус</th></tr><tr><td>V1</td><td>Docker и Docker Compose на BR-SRV</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V2</td><td>Каталог /opt/nextcloud</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V3</td><td>docker-compose.yml</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V4</td><td>Volume БД</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V5</td><td>Volume Nextcloud</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V6</td><td>docker-compose up -d</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V7</td><td>Nginx</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V8</td><td>Файл конфигурации Nginx</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V9</td><td>Символическая ссылка sites-enabled</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V10</td><td>Самоподписанный SSL</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V11</td><td>Прокси на обязательный порт 8080 Nextcloud</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V12</td><td>Локальная проверка https://127.0.0.1</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V13</td><td>Группы Work, Job, labor</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V14</td><td>User1, User2 в Work</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V15</td><td>User3, User4 в Job</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V16</td><td>User5 в labor</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V17</td><td>Каталоги /home/Folder/...</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V18</td><td>Права 770 root:Work</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V19</td><td>Права 750 root:Job</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V20</td><td>Зафиксировать IP Сервера 1</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V21</td><td>Браузер HQ-CLI → Nextcloud, принять сертификат</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V22</td><td>Проверка User1/User3/User5</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V23</td><td>Просмотр access.log Nginx</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V24</td><td>Поиск IP HQ-CLI в логах</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr><tr><td>V25</td><td>Проверка точного HSTS-заголовка</td><td><a href="#variant">variant</a></td><td>Покрыто командами; требуется стендовый прогон</td></tr></table><div class="note warn"><b>Примечание по Samba:</b> текущий Word-файл требует службу Samba и парольную аутентификацию пользователей группы hq с HQ-CLI, но не требует явно разворачивать Samba AD DC и вводить HQ-CLI в домен. Документация реализует буквальный вариант через smbclient. Если на вашей площадке эксперт требует вход доменным пользователем в саму ОС HQ-CLI, используйте отдельный сценарий Samba AD DC и join-to-domain.</div></section><section class="sheet" id="sources">
+<header class="doc-header">
+<div class="brand-text"><i>Образовательные треки ООО «Ред Софт»</i><br/>
+<span>КОД-09.02.06-1-2026</span><br/>
+<span>Сетевой и системный администратор</span></div>
+<div class="redos-logo"><span></span><span></span><span></span><span></span><strong>РЕД<span>ОС</span></strong></div>
+</header>
+<div class="rule"></div>
+<div class="section-title"><h2>Официальные источники и границы проверки</h2></div>
+<p>Команды в runbook сверены с официальными документами и официальной Базой знаний. 
+Генерация файла не выполняет команды на вашем реальном стенде, поэтому финальная гарантия достигается контрольным прогоном на VM.</p>
+<ul class="source-list">
+<li><a href="https://api.prod.eltex-co.ru/storage/upload_center/files/53/ESR-Series_CLI_1.37.pdf">Eltex ESR-Series. Справочник команд CLI. Версия 1.37</a></li>
+<li><a href="https://redos.red-soft.ru/base/redos-7_3/7_3-administation/7_3-containers/7_3-docker-install/">РЕД ОС: установка и настройка Docker</a></li>
+<li><a href="https://redos.red-soft.ru/base/redos-7_3/7_3-install/7_3-alter-install/7_3-install-on-raid/7_3-program-raid0-and-raid1/">РЕД ОС: создание программного RAID0 и RAID1</a></li>
+<li><a href="https://redos.red-soft.ru/base/redos-7_3/7_3-users-tasks/7_3-browser/7_3-yandex-browser-install/">РЕД ОС: установка Яндекс Браузера</a></li>
+<li><a href="https://nginx.org/en/docs/http/ngx_http_proxy_module.html">Nginx: proxy_pass и proxy_set_header</a></li>
+<li><a href="https://nginx.org/en/docs/http/ngx_http_auth_basic_module.html">Nginx: auth_basic и auth_basic_user_file</a></li>
+<li><a href="https://docs.docker.com/compose/">Docker Compose documentation</a></li>
+<li><a href="https://hub.docker.com/_/mysql">Official MySQL Docker image</a></li>
+<li><a href="https://hub.docker.com/_/nextcloud">Official Nextcloud Docker image</a></li>
+</ul>
+<div class="note warn"><b>Особенно важные проверки перед сдачей:</b> интерфейсы ISP, наличие Additional.iso как /dev/sr0, фактические Docker-теги после docker load, а также доступность репозиториев Docker на BR-SRV.</div>
+</section>
+<div class="footer">КОД-09.02.06-1-2026 · Сетевой и системный администратор · RED OS / Eltex ESR 1.37.4</div>
+</body>
+</html>
